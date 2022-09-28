@@ -101,11 +101,19 @@ class BookController extends Controller
 
        $rows = (new \yii\db\Query())
       ->select([
-        '*',
-        'COUNT(*) as jumlah_booking'
+        'COUNT(*) as jumlah_booking',
+        'collections.NomorBarcode',
+        'catalogs.Title',
+        'catalogs.Author',
+        'catalogs.Edition',
+        'catalogs.Publisher',
+        'catalogs.PublishYear',
+        'catalogs.PublishLocation',
+        'catalogs.Note',
       ])
       ->from('bookinglogs')
-      // ->innerjoin('collections','bookinglogs.collectionId = collections.Catalog_id')
+      ->innerjoin('collections','bookinglogs.collectionId = collections.ID')
+      ->innerjoin('catalogs','collections.Catalog_id = catalogs.ID')
       // ->innerjoin('catalogs','collections.catalog_id = catalogs.ID')
       ->orderBy(['jumlah_booking'=> SORT_DESC])
       ->groupBy(['bookinglogs.collectionId'])
