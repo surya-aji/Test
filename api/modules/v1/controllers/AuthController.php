@@ -19,14 +19,15 @@ use yii\filters\auth\QueryParamAuth;
 class AuthController extends Controller
 {
 
-  protected $token = '';
+
+
   public function behaviors()
   {
       return ArrayHelper::merge(
           parent::behaviors(), [
               'authenticator' => [
                   'class' => CompositeAuth::className(),
-                  'except' => ['login'],
+                  'except' => ['login','signup'],
                   'authMethods' => [
                       HttpBasicAuth::className(),
                       HttpBearerAuth::className(),
@@ -63,8 +64,18 @@ class AuthController extends Controller
     // }
 
     public function actionLogin(){
+      
+      
       $post = Yii::$app->request->post();
-      $model = User::findOne(["username" => $post["username"]]);
+      
+            // $model = (new \yii\db\Query())
+            // ->from('user')
+            // ->join('members', 'user.email = members.email')
+            // ->select('user.username','username.email','members.MemberNo')
+            // ->where(['username.email' => $post['noanggota/email']])
+            // ->orWhere(['members.MemberNo' => $params['noanggota/email']])
+            // ->one();
+      $model = User::findOne(["email" => $post["email"]]);
       if (empty($model)) {
           throw new \yii\web\NotFoundHttpException('User not found');
       }
@@ -106,16 +117,42 @@ class AuthController extends Controller
     }
 
     public function actionSignup(){
+     
+
       
+
+
       $model = new SignupForm();
       $params = Yii::$app->request->post();
       $model->username = $params['username'];
       $model->password=$params['password'];
       $model->email=$params['email'];
+      
+      $command = Yii::$app->db->createCommand();
+      $command->insert('members', array(
+          'Fullname'=>$params['username'],
+          'Email' => $params['email'],  
+          'Sex_id'=>$params['jeniskelamin'],
+          'PlaceOfBirth' => $params['tempatlahir'],
+          'DateOfBirth' => $params['tanggallahir'],
+          'IdentityType_id' => $params['jenisidentitas'],
+          'IdentityNo' => $params['noidentitas'],
+          'Address' => $params['alamat'],
+          'RT' => $params['rt'],
+          'RW' => $params['rw'],
+          'RTNow' => $params['rt'],
+          'RWNow' => $params['rw'],
+          'Kecamatan' => $params['kecamatan'],
+          
+      ))->execute();
+
 
       if ($model->signup()) {
+        
           $response['isSuccess'] = 201;
           $response['message'] = 'Berhasil Registrasi!';
+          $response['model'] = $model;
+
           // $response['user'] =\common\models\User::findByUsername($model->username);
           Yii::$app->response->format = Response::FORMAT_JSON;
           return $response;   

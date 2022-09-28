@@ -49,6 +49,7 @@ return [
                  'POST login' => 'auth/login',
                  'GET logout' => 'auth/logout',
                  'GET book' => 'book/index',
+                 'GET book' => 'book/oftenborrowed',
             ],
         ],
         
