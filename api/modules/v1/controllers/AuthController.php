@@ -69,13 +69,16 @@ class AuthController extends Controller
       $post = Yii::$app->request->post();
       
             // $model = (new \yii\db\Query())
+            // ->select('user.username','user.email','members.MemberNo')
             // ->from('user')
             // ->join('members', 'user.email = members.email')
-            // ->select('user.username','username.email','members.MemberNo')
-            // ->where(['username.email' => $post['noanggota/email']])
-            // ->orWhere(['members.MemberNo' => $params['noanggota/email']])
+            // ->where(['user.email' => $post['email']])
+            // ->orWhere(['members.MemberNo' => $post['email']])
             // ->one();
-      $model = User::findOne(["email" => $post["email"]]);
+
+
+      $model = User::findOne(["email" => $post["username"]]);
+      // var_dump($rows);
       if (empty($model)) {
           throw new \yii\web\NotFoundHttpException('User not found');
       }
@@ -143,6 +146,8 @@ class AuthController extends Controller
           'RTNow' => $params['rt'],
           'RWNow' => $params['rw'],
           'Kecamatan' => $params['kecamatan'],
+          'Kelurahan' => $params['kelurahan'],
+          'City' => $params['kabupaten'],
           
       ))->execute();
 

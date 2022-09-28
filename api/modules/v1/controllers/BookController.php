@@ -76,28 +76,43 @@ class BookController extends Controller
       // ->all();
 
 
-      $rows = (new \yii\db\Query())
+      // $rows = (new \yii\db\Query())
+      // ->select([
+      //   'catalogs.Title',
+      //   'catalogs.Author',
+      //   'catalogs.Edition',
+      //   'catalogs.Publisher',
+      //   'catalogs.PublishYear',
+      //   'catalogs.PublishLocation',
+      //   'catalogs.Note',
+      //   'collections.ID as collection_id',
+      //   'collections.Catalog_id as catalog_id',
+      //   // 'COUNT(bookinglogs.*) as booking'
+      //   'bookinglogs.memberId',
+      //   'bookinglogs.collectionId'
+      // ])
+      // ->from('bookinglogs')
+      // ->innerjoin('collections','bookinglogs.collectionId = collections.Catalog_id')
+      // ->innerjoin('catalogs','collections.catalog_id = catalogs.ID')
+      // ->orderBy(['bookinglogs.collectionId'=> SORT_DESC])
+      // ->groupBy(['bookinglogs.collectionId'])
+      // ->limit(2)
+      // ->all();
+
+       $rows = (new \yii\db\Query())
       ->select([
-        'catalogs.Title',
-        'catalogs.Author',
-        'catalogs.Edition',
-        'catalogs.Publisher',
-        'catalogs.PublishYear',
-        'catalogs.PublishLocation',
-        'catalogs.Note',
-        'collections.ID as collection_id',
-        'collections.Catalog_id as catalog_id',
-        // 'COUNT(bookinglogs.*) as booking'
-        'bookinglogs.memberId',
-        'bookinglogs.collectionId'
+        '*',
+        'COUNT(*) as jumlah_booking'
       ])
       ->from('bookinglogs')
-      ->innerjoin('collections','bookinglogs.collectionId = collections.Catalog_id')
-      ->innerjoin('catalogs','collections.catalog_id = catalogs.ID')
-      ->orderBy(['bookinglogs.collectionId'=> SORT_DESC])
+      // ->innerjoin('collections','bookinglogs.collectionId = collections.Catalog_id')
+      // ->innerjoin('catalogs','collections.catalog_id = catalogs.ID')
+      ->orderBy(['jumlah_booking'=> SORT_DESC])
       ->groupBy(['bookinglogs.collectionId'])
-      ->limit(2)
+      // ->limit(2)
       ->all();
+
+      
 
 
       $response = [$rows];
